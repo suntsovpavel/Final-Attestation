@@ -1,6 +1,6 @@
 package RegisterAnimals.model.group;
 
-import prizeDraw.model.group.iterators.GroupIterator;
+import RegisterAnimals.model.group.iterators.GroupIterator;
 
 import java.io.Serializable;
 import java.util.ArrayList;

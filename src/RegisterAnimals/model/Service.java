@@ -1,124 +1,54 @@
 package RegisterAnimals.model;
 
+import RegisterAnimals.model.HumanFriends.PackAnimal;
 import RegisterAnimals.model.HumanFriends.Pet;
 import RegisterAnimals.model.group.Group;
-import saveload.LoadFrom;
-import saveload.SaveTo;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+import RegisterAnimals.model.group.comparators.ComparatorByName;
+import RegisterAnimals.model.group.comparators.ComparatorByAge;
+
 public class Service {
-    private Group<Pet> prizeDraw;
-    private SaveTo saver;
-    private LoadFrom loader;
-    private ReportablePrize informerHuman;
-    private String errorMessage;
-    private String pathFilePrizes = "prizes.txt";
+    private int idPet = 0;
+    private List<Pet> animals;
 
-    public ServicePrizeDraw(SaveTo saver, LoadFrom loader){
-
-        this.prizeDraw = new PrizeDraw<Prize>(new Group<Prize>());
-        this.saver = saver;
-        this.loader = loader;
-        this.informerHuman = new ReportablePrize();
-        this.errorMessage = null;
+    public Service(){
+        this.animals = new ArrayList<Pet>();
     }
 
-    //добавляем игрушку в список разыгрываемых:
-    public boolean addItem(String name, int amount, int weight){
-        //Получаем максимальный id по текущему списку и увеличиваем на единицу:
-        int id = prizeDraw.getMaxId() + 1;
-
-        //!!! Объекты можем создавать только здесь, не в PrizeDraw !!!
-        Prize prize = new Prize(id, name, amount, weight, informerHuman);
-        if (!prize.getFlag()) //в Prize заданы некорректные исходные данные
-            return false;
-        prizeDraw.addItem(prize);
-        return true;
+    // Счетчик животных
+    //Создать механизм, который позволяет вывести на экран общее количество
+    // созданных животных любого типа (Как домашних, так и вьючных),
+    // то есть при создании каждого нового животного счетчик увеличивается на “1”.
+    public int countAnimals(){
+        return animals.size();
     }
 
-    //возвращаем информацию о игрушках в списке разыгрываемых:
-    public String getInfo(){
-        return prizeDraw.getInfo();
+    public void sortByName(){
+        animals.sort(new ComparatorByName<>());
     }
 
-    //Разыгрываем игрушку
-    public String draw(){
-        Prize prize = prizeDraw.draw();
-        if(prize == null){
-            return prizeDraw.getErrorMessage();
-        }else{
-            return "Разыграна игрушка: " + prize.getName()
-                    + "\nОчередь выдачи (имена игрушек): " + prizeDraw.getInfoDeque();
-        }
+    public void sortByAge(){
+        animals.sort(new ComparatorByAge<>());
     }
 
-    //Получаем призовые игрушки - освобождаем очередь PrizeDraw.queue,
-    //возвращаем список имен игрушек и делаем записи в файл
-    public String getPrizes(){
-        List<String> names = prizeDraw.eraseDeque();
-
-        if(names.size() > 0){
-            //дописываем в файл имена выданных призовых игрушек
-            try {
-                FileWriter writer = new FileWriter(pathFilePrizes, true);
-                BufferedWriter bufferWriter = new BufferedWriter(writer);
-                for (String name : names)
-                    bufferWriter.write(name + '\n');
-                bufferWriter.close();
-            }
-            catch (IOException e) {
-                System.out.println(e.toString());
-            }
-            return  "Очередь выдачи: [" + String.join(",", names) + "]\n"
-                    + "Очередь очищена, игрушки выданы; Имена игрушек дописаны в файл " + pathFilePrizes;
-        }else{
-            return "Очередь выдачи пуста, разыграйте игрушки";
-        }
+    //Вывести список животных по дате рождения
+    public List<Pet> getAnimalsSortedByAge(){
+        sortByAge();
+        return animals;
     }
 
-    //Пополняем количество единиц для игрушки по id
-    //return false, если id задан некорректно либо add <= 0
-    public boolean addAmountPrizeById(int id, int add){
-        if(add <= 0 ) return false; //пополняемое количество должно быть > 0
-        Prize p = prizeDraw.getItemById(id);
-        if(p == null) return false; //некорретный id
-        p.addAmount(add);
-        return true;
-    }
-
-    //изменяем вес игрушки по id
-    public boolean changeWeight(int id, int weight){
-        Prize p = prizeDraw.getItemById(id);
-        if(p == null) return false; //некорретный id
-        return p.changeWeight(weight);
-    }
-
-    //Выполняем запись содержимого prizeDraw
-    public boolean saveTo(String path) {
-        try {
-            saver.saveTo(prizeDraw, path);
-        }
-        catch(IOException e) {
-            System.out.println(e.toString());
-            return false;
-        }
-        return true;
-    }
-    //Выполняем чтение содержимого дерева
-    public boolean loadFrom(String path) {
-        try {
-            prizeDraw = (PrizeDraw<Prize>)loader.loadFrom(path);
-        }
-        catch(ClassNotFoundException e) {
-            return false;
-        }
-        catch(IOException e) {
-            return false;
-        }
-        return true;
+    public void addItem(String name, String type, LocalDate dateBirth, ArrayList<String> commands,
+                        boolean isPackAnimal){
+        if(isPackAnimal)
+            animals.add(new PackAnimal(idPet++, name, type, dateBirth, commands));
+        else
+            animals.add(new Pet(idPet++, name, type, dateBirth, commands));
     }
 }
