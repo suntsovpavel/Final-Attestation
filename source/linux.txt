@@ -1,0 +1,171 @@
+//1. Использование команды cat в Linux
+
+master@master-VirtualBox:~$ cat > Pets
+dogs
+cats
+hamsters
+
+master@master-VirtualBox:~$ cat Pets
+dogs
+cats
+hamsters
+
+master@master-VirtualBox:~$ cat > "Pack animals"
+horses
+camels
+donkeys
+
+master@master-VirtualBox:~$ cat "Pack animals"
+horses
+camels
+donkeys
+
+master@master-VirtualBox:~$ cat Pets "Pack animals" > "Human friends"
+
+master@master-VirtualBox:~$ cat  "Human friends"
+dogs
+cats
+hamsters
+horses
+camels
+donkeys
+
+master@master-VirtualBox:~$ ls
+'Human friends'   snap                           Видео       Изображения    'Рабочий стол'
+'Pack animals'    uidb                           Документы   Музыка          Шаблоны
+ Pets             VBoxGuestAdditions_6.1.2.iso   Загрузки    Общедоступные
+
+//2. Работа с директориями в Linux
+
+master@master-VirtualBox:~$ sudo mkdir newfolder
+
+master@master-VirtualBox:~$ sudo mv "Human friends" /newfolder
+
+master@master-VirtualBox:~$ sudo mv "Human friends" /home/master/newfolder
+master@master-VirtualBox:~$ cd newfolder/
+master@master-VirtualBox:~/newfolder$ ls
+'Human friends'
+master@master-VirtualBox:~/newfolder$ cat "Human friends"
+dogs
+cats
+hamsters
+horses
+camels
+donkeys
+
+//3. Работа с MySQL в Linux. “Установить MySQL на вашу вычислительную машину”
+//Подключить дополнительный репозиторий MySQL. Установить любой пакет из этого репозитория.
+
+master@master-VirtualBox:~$ wget https://dev.mysql.com/get/mysql-apt-config_0.8.24-1_all.deb
+--2023-12-09 14:04:22--  https://dev.mysql.com/get/mysql-apt-config_0.8.24-1_all.deb
+Распознаётся dev.mysql.com (dev.mysql.com)… 184.51.238.43, 2a02:2d8:3:9a9::2e31, 2a02:2d8:3:9a5::2e31
+Подключение к dev.mysql.com (dev.mysql.com)|184.51.238.43|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа… 302 Moved Temporarily
+Адрес: https://repo.mysql.com//mysql-apt-config_0.8.24-1_all.deb [переход]
+--2023-12-09 14:04:23--  https://repo.mysql.com//mysql-apt-config_0.8.24-1_all.deb
+Распознаётся repo.mysql.com (repo.mysql.com)… 23.210.173.94, 2a02:26f0:d200:889::1d68, 2a02:26f0:d200:888::1d68
+Подключение к repo.mysql.com (repo.mysql.com)|23.210.173.94|:443... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа… 200 OK
+Длина: 18048 (18K) [application/x-debian-package]
+Сохранение в: ‘mysql-apt-config_0.8.24-1_all.deb’
+mysql-apt-config_0.8.2 100%[============================>]  17,62K  --.-KB/s    за 0s      
+2023-12-09 14:04:23 (186 MB/s) - ‘mysql-apt-config_0.8.24-1_all.deb’ сохранён [18048/18048]
+
+master@master-VirtualBox:~$ sudo dpkg -i mysql-apt-config_0.8.24-1_all.deb
+Выбор ранее не выбранного пакета mysql-apt-config.
+(Чтение базы данных … на данный момент установлено 205223 файла и каталога.)
+Подготовка к распаковке mysql-apt-config_0.8.24-1_all.deb …
+Распаковывается mysql-apt-config (0.8.24-1) …
+Настраивается пакет mysql-apt-config (0.8.24-1) …
+Warning: apt-key should not be used in scripts (called from postinst maintainerscript of the package mysql-apt-config)
+Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8)).
+OK
+
+master@master-VirtualBox:~$ sudo apt update
+Сущ:1 http://ru.archive.ubuntu.com/ubuntu jammy InRelease
+Пол:2 http://ru.archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]              
+Сущ:3 http://ru.archive.ubuntu.com/ubuntu jammy-backports InRelease                     
+Пол:4 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]               
+Пол:5 http://repo.mysql.com/apt/ubuntu jammy InRelease [20,2 kB]           
+Пол:6 http://repo.mysql.com/apt/ubuntu jammy/mysql-8.0 Sources [963 B]
+Пол:7 http://repo.mysql.com/apt/ubuntu jammy/mysql-apt-config i386 Packages [565 B]
+Пол:8 http://repo.mysql.com/apt/ubuntu jammy/mysql-apt-config amd64 Packages [565 B]
+Пол:9 http://repo.mysql.com/apt/ubuntu jammy/mysql-8.0 amd64 Packages [12,6 kB]
+Пол:10 http://repo.mysql.com/apt/ubuntu jammy/mysql-tools amd64 Packages [7 994 B]
+Пол:11 http://repo.mysql.com/apt/ubuntu jammy/mysql-tools i386 Packages [457 B]
+Получено 273 kB за 3с (85,0 kB/s)           
+Чтение списков пакетов… Готово
+Построение дерева зависимостей… Готово
+Чтение информации о состоянии… Готово         
+Может быть обновлено 36 пакетов. Запустите «apt list --upgradable» для их показа.
+W: http://repo.mysql.com/apt/ubuntu/dists/jammy/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details.
+
+master@master-VirtualBox:~$ sudo apt-get install mysql-server
+.......
+
+//4. Установить и удалить deb-пакет с помощью dpkg
+
+master@master-VirtualBox:~$ wget http://archive.ubuntu.com/ubuntu/pool/main/a/alsa-ucm-conf/alsa-ucm-conf_1.2.6.3-1ubuntu1.9_all.deb
+--2023-12-09 14:53:50--  http://archive.ubuntu.com/ubuntu/pool/main/a/alsa-ucm-conf/alsa-ucm-conf_1.2.6.3-1ubuntu1.9_all.deb
+Распознаётся archive.ubuntu.com (archive.ubuntu.com)… 91.189.91.82, 185.125.190.39, 91.189.91.83, ...
+Подключение к archive.ubuntu.com (archive.ubuntu.com)|91.189.91.82|:80... соединение установлено.
+HTTP-запрос отправлен. Ожидание ответа… 200 OK
+Длина: 43354 (42K) [application/vnd.debian.binary-package]
+Сохранение в: ‘alsa-ucm-conf_1.2.6.3-1ubuntu1.9_all.deb’
+
+alsa-ucm-conf_1.2.6.3- 100%[============================>]  42,34K  --.-KB/s    за 0s      
+
+2023-12-09 14:53:51 (181 MB/s) - ‘alsa-ucm-conf_1.2.6.3-1ubuntu1.9_all.deb’ сохранён [43354/43354]
+
+master@master-VirtualBox:~$ sudo dpkg -i alsa-ucm-conf_1.2.6.3-1ubuntu1.9_all.deb
+(Чтение базы данных … на данный момент установлено 205735 файлов и каталогов.)
+Подготовка к распаковке alsa-ucm-conf_1.2.6.3-1ubuntu1.9_all.deb …
+Распаковывается alsa-ucm-conf (1.2.6.3-1ubuntu1.9) на замену (1.2.6.3-1ubuntu1.8) …
+Настраивается пакет alsa-ucm-conf (1.2.6.3-1ubuntu1.9) …
+
+//Теперь удаляем пакет
+
+master@master-VirtualBox:~$ sudo dpkg -r alsa-ucm-conf
+(Чтение базы данных … на данный момент установлен 205741 файл и каталог.)
+Удаляется alsa-ucm-conf (1.2.6.3-1ubuntu1.9) …
+master@master-VirtualBox:~$ sudo apt-get autoremove
+Чтение списков пакетов… Готово
+Построение дерева зависимостей… Готово
+Чтение информации о состоянии… Готово         
+Обновлено 0 пакетов, установлено 0 новых пакетов, для удаления отмечено 0 пакетов, и 35 пакетов не обновлено.
+master@master-VirtualBox:~$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
