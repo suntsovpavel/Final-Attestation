@@ -11,20 +11,39 @@ public class PackAnimal extends Pet {
     public PackAnimal(int id, String name, String type, LocalDate dateBirth, ArrayList<String> commands) {
         super(id, name, type, dateBirth, commands);
         packingCommands = new ArrayList<>();
-        packingCommands.add("load"); //добавляем 2 команды "нагрузить - разгрузить"
-        packingCommands.add("unload");
+        packingCommands.add("нагрузить");
+        packingCommands.add("разгрузить");
     }
 
-    public List<String> getPackingCommands(){
+    public List<String> getPackingCommands() {
         return packingCommands;
     }
 
-    @Override
-    //Возвращаем команды с учетом дополнительных: packingCommands
-    public List<String> getCommands() {
-        List<String> list =super.getCommands();
-        for (String one : packingCommands)
-            list.add(one);
-        return list;
+    public String getInfo() {
+        StringBuilder result = new StringBuilder();
+        result.append("{");
+        result.append(String.format("id: %d; ", super.getId()));
+        result.append(String.format("Имя: %s; ", super.getName()));
+        result.append(String.format("Вид: %s; ", super.getType()));
+        result.append(String.format("Дата рождения: %s; ", super.getDateBirth().toString()));
+        List<String> commands = super.getCommands();
+        if (commands.size() > 0) {
+            List<String> commandsStr = new ArrayList<>();
+            for (String one : commands) {
+                commandsStr.add(one);
+            }
+            result.append(String.format("Список команд: %s; ", String.join(",", commandsStr)));
+        }
+        {
+            List<String> commandsStr = new ArrayList<>();
+            for (String one : packingCommands) {
+                commandsStr.add(one);
+            }
+            result.append(String.format("Список операций: %s", String.join(",", commandsStr)));
+        }
+        result.append("}");
+        return result.toString();
     }
 }
+
+

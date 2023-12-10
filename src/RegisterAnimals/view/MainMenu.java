@@ -1,6 +1,6 @@
-package prizeDraw.view;
+package RegisterAnimals.view;
 
-import prizeDraw.view.commands.*;
+import RegisterAnimals.view.commands.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,11 @@ public class MainMenu {
 
     public MainMenu(ConsoleUI consoleUI) {
         commandList = new ArrayList<>();
-        commandList.add(new ShowListPrizes(consoleUI));   //вывести список разыгрываемых игрушек
-        commandList.add(new AddPrize(consoleUI));   //добавить игрушку в список разыгрываемых
-        commandList.add(new Draw(consoleUI));     //разыграть призовую игрушку
-        commandList.add(new GetPrizes(consoleUI));  // получить игрушки (очистить очередь выдачи)
-        commandList.add(new AddAmount(consoleUI));  // добавить количество единиц игрушки по id
-        commandList.add(new ChangeWeight(consoleUI));  // изменить вес (вероятность выпадения) игрушки по id
-        commandList.add(new SaveToFile(consoleUI));
-        commandList.add(new LoadFromFile(consoleUI));
+        commandList.add(new countAnimals(consoleUI));
+        commandList.add(new ShowInfoAnimalsSortedByAge(consoleUI));
+        commandList.add(new addAnimal(consoleUI));
+        commandList.add(new addCommand(consoleUI));
+        commandList.add(new GetCommandsAnimalById(consoleUI));
         commandList.add(new Finish(consoleUI));
     }
 

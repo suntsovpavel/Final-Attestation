@@ -1,60 +1,50 @@
-package prizeDraw.presenter;
+package RegisterAnimals.presenter;
 
-import prizeDraw.model.ServicePrizeDraw;
-import prizeDraw.model.prize.Prize;
-import prizeDraw.view.View;
-import saveload.FileLoader;
-import saveload.FileSaver;
+import RegisterAnimals.model.HumanFriends.PackAnimal;
+import RegisterAnimals.model.HumanFriends.Pet;
+import RegisterAnimals.model.Service;
+import RegisterAnimals.view.View;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Presenter {
     private View view;
-    private ServicePrizeDraw service;
+    private Service service;
 
     public Presenter(View view) {
         this.view = view;
-        FileSaver saver = new FileSaver();
-        FileLoader loader = new FileLoader();
-        service = new ServicePrizeDraw(saver, loader);
+        service = new Service();
     }
 
-    public boolean addPrize(String name, int amount, int weight)
-    {
-        return service.addItem(name, amount, weight);
+    // Счетчик животных
+    //Создать механизм, который позволяет вывести на экран общее количество
+    // созданных животных любого типа (Как домашних, так и вьючных),
+    // то есть при создании каждого нового животного счетчик увеличивается на “1”.
+    public int countAnimals(){
+        return service.countAnimals();
     }
 
-    //возвращаем информацию о игрушках в списке разыгрываемых:
-    public String getInfo(){
-        return service.getInfo();
+    //Вывести список информации о животных, отсортированный по дате рождения
+    public String getInfoAnimalsSortedByAge(){
+        return service.getInfoAnimalsSortedByAge();
     }
 
-    //Разыгрываем игрушку
-    public String draw(){
-        return service.draw();
+    //добавить животное
+    public void addAnimal(String name, String type, LocalDate dateBirth, ArrayList<String> commands,
+                        boolean isPackAnimal){
+        service.addAnimal(name,type,dateBirth,commands,isPackAnimal);
     }
 
-    //получаем все игрушки для выдачи
-    // освобождаем очередь и возвращаем список имен игрушек
-    public String getPrizes(){
-        return service.getPrizes();
+    //Добавить возможность обучать животных новым командам
+    //return false, если задан неверный id животного
+    public boolean addCommand(int id, String command){
+        return service.addCommand(id, command);
     }
 
-    //Пополняем количество единиц для игрушки по id
-    //return false, если id задан некорректно
-    public boolean addAmount(int id, int add){
-        return service.addAmountPrizeById(id, add);
-    }
-
-    //изменяем вес игрушки по id
-    public boolean changeWeight(int id, int weight){
-        return service.changeWeight(id, weight);
-    }
-
-    public boolean saveToFile(String path){
-        return service.saveTo(path);
-    }
-    public boolean loadFromFile(String path){
-        return service.loadFrom(path);
+    //Вывести список команд, которые может выполнять добавленное животное (например, "сидеть", "лежать")
+    public List<String> getCommandsAnimalById(int id){
+        return service.getCommandsAnimalById(id);
     }
 }

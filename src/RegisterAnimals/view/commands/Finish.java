@@ -1,6 +1,6 @@
-package prizeDraw.view.commands;
+package RegisterAnimals.view.commands;
 
-import prizeDraw.view.ConsoleUI;
+import RegisterAnimals.view.ConsoleUI;
 
 public class Finish extends Command {
     public Finish(ConsoleUI consoleUI) {

@@ -2,14 +2,10 @@ package RegisterAnimals.model;
 
 import RegisterAnimals.model.HumanFriends.PackAnimal;
 import RegisterAnimals.model.HumanFriends.Pet;
-import RegisterAnimals.model.group.Group;
-import java.io.IOException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 import RegisterAnimals.model.group.comparators.ComparatorByName;
 import RegisterAnimals.model.group.comparators.ComparatorByAge;
@@ -38,17 +34,36 @@ public class Service {
         animals.sort(new ComparatorByAge<>());
     }
 
-    //Вывести список животных по дате рождения
-    public List<Pet> getAnimalsSortedByAge(){
+    //Вывести список информации о животных по дате рождения
+    public String getInfoAnimalsSortedByAge(){
         sortByAge();
-        return animals;
+        List<String> listInfo = new ArrayList<>();
+        for(Pet one : animals){
+            listInfo.add(one.getInfo());
+        }
+        return String.format("(%s)", String.join(",", listInfo));
     }
 
-    public void addItem(String name, String type, LocalDate dateBirth, ArrayList<String> commands,
+    //добавить животное
+    public void addAnimal(String name, String type, LocalDate dateBirth, ArrayList<String> commands,
                         boolean isPackAnimal){
         if(isPackAnimal)
             animals.add(new PackAnimal(idPet++, name, type, dateBirth, commands));
         else
             animals.add(new Pet(idPet++, name, type, dateBirth, commands));
+    }
+
+    //Добавить возможность обучать животных новым командам
+    //return false, если задан неверный id
+    public boolean addCommand(int id, String command){
+        if(id >= countAnimals()) return false;
+        animals.get(id).addCommand(command);
+        return true;
+    }
+
+    //Вывести список команд, которые может выполнять добавленное животное (например, "сидеть", "лежать")
+    public List<String> getCommandsAnimalById(int id){
+        if(id >= countAnimals()) return null;
+        return animals.get(id).getCommands();
     }
 }

@@ -2,8 +2,8 @@ package RegisterAnimals.model.HumanFriends;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 public class Pet implements Aged, Named {
     private int id;
@@ -44,9 +44,28 @@ public class Pet implements Aged, Named {
     public List<String> getCommands() {
         return commands;
     }
+
     //Добавить возможность обучать животных новым командам
     public void addCommand(String command){
         if(!commands.contains(command))
             commands.add(command);
+    }
+
+    public String getInfo(){
+        StringBuilder result = new  StringBuilder();
+        result.append("{");
+        result.append(String.format("id: %d, ", id));
+        result.append(String.format("Имя: %s, ", name));
+        result.append(String.format("Вид: %s, ", type));
+        result.append(String.format("Дата рождения: %s, ", dateBirth.toString()));
+        if(commands.size() > 0){
+            List<String> commandsStr = new ArrayList<>();
+            for(String one : commands){
+                commandsStr.add(one);
+            }
+            result.append(String.format("Список команд: %s", String.join(",", commandsStr)));
+        }
+        result.append("}");
+        return result.toString();
     }
 }

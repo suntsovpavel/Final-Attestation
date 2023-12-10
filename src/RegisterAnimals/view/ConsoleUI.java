@@ -1,7 +1,11 @@
-package prizeDraw.view;
+package RegisterAnimals.view;
 
-import prizeDraw.presenter.Presenter;
+import RegisterAnimals.presenter.Presenter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI implements View{
@@ -75,156 +79,86 @@ public class ConsoleUI implements View{
         System.out.println(INPUT_ERROR);
     }
 
-    public void ShowListPrizes(){
-        System.out.println(presenter.getInfo());
+    // Счетчик животных
+    //Создать механизм, который позволяет вывести на экран общее количество
+    // созданных животных любого типа (Как домашних, так и вьючных),
+    // то есть при создании каждого нового животного счетчик увеличивается на “1”.
+    public void countAnimals(){
+        System.out.println(presenter.countAnimals());
     }
 
-    public boolean addPrize(){
-        System.out.println("Введите наименование игрушки: ");
-        String name = scanner.nextLine();
+    //Вывести список информации о животных, отсортированный по дате рождения
+    public void ShowInfoAnimalsSortedByAge(){
+        System.out.println(presenter.getInfoAnimalsSortedByAge());
+    }
 
-        int amount = 0, weight=0;
-        {
-            System.out.println("Введите количество единиц: ");
-            String str = scanner.nextLine();
-            try {
-                amount = Integer.parseInt( str );
-                if(amount < 1){
-                    System.out.println("Введенное количество единиц меньше 1");
-                    return false;
-                }
-            } catch (NumberFormatException  e) {
-                System.out.println("Ошибка ввода (не целое)");
-                return false;
-            }
+    public boolean addAnimal(){
+        System.out.println("Введите вид животного (например, кошка): ");
+        String type = scanner.nextLine().trim();
+        if(type.length() == 0)return false;
+
+        System.out.println("Введите имя животного: ");
+        String name = scanner.nextLine().trim();
+        if(name.length() == 0)return false;
+
+        System.out.println("Введите дату рождения в формате \"2018-12-27\": ");
+        LocalDate dateBirth;
+        try{
+            dateBirth = LocalDate.parse(scanner.nextLine());
         }
-        {
-            System.out.println("Введите вес (частоту выпадения игрушки) от 1 до 99: ");
-            String str = scanner.nextLine();
-            try {
-                weight = Integer.parseInt( str );
-                if(weight < 1 || weight >= 100){
-                    System.out.println("Введено число вне пределов от 1 до 99");
-                    return false;
-                }
-            } catch (NumberFormatException  e) {
-                System.out.println("Ошибка ввода (не целое)");
-                return false;
-            }
+        catch (DateTimeParseException e){
+            return false;
         }
-        if(presenter.addPrize(name, amount, weight)){
-            System.out.println("Игрушка успешно добавлена в список разыгрываемых:");
-            ShowListPrizes();
-        }else {
-            System.out.println("Игрушка не добавлена: заданы некорректные параметры");
+
+        System.out.println("Введите список команд, разделенных запятыми:");
+        String commandsStr = scanner.nextLine();
+        String[] splitted = commandsStr.split(",");
+        ArrayList<String> commands = new ArrayList<>();
+        for(String one : splitted){
+            String trimmed = one.trim();
+            if(trimmed.length()>0)
+                commands.add(trimmed);
         }
+        System.out.println("Вьючное животное? Y/N: ");
+        String packAnimalStr = scanner.nextLine().toLowerCase().trim();
+        boolean isPackAnimal = (packAnimalStr.equals("y"));
+
+        presenter.addAnimal(name, type, dateBirth, commands, isPackAnimal);
         return true;
     }
 
-    //разыграть игрушку
-    public void draw(){
-        System.out.println(presenter.draw());
+    //Добавить возможность обучать животных новым командам
+    //return false, если задан неверный id животного либо пустая команда
+    public boolean addCommand()
+    {
+        System.out.println("Введите команду: ");
+        String command = scanner.nextLine().trim();
+        if(command.length() == 0)return false;
+
+        System.out.println("Введите id животного: ");
+        String idStr = scanner.nextLine().trim();
+        int id;
+        try{
+            id = Integer.parseInt(idStr);
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+        return presenter.addCommand(id, command);
     }
 
-    //получить игрушки (очистить очередь выдачи)
-    public void getPrizes(){
-        System.out.println(presenter.getPrizes());
-    }
-
-
-    public boolean addAmount(){
-        int id=0, amount = 0;
-        {
-            System.out.println("Введите id игрушки: ");
-            String str = scanner.nextLine();
-            try {
-                id = Integer.parseInt( str );
-                if(id < 0){
-                    System.out.println("Введено значение меньше нуля");
-                    return false;
-                }
-            } catch (NumberFormatException  e) {
-                System.out.println("Ошибка ввода (не целое)");
-                return false;
-            }
+    //Вывести список команд, которые может выполнять добавленное животное (например, "сидеть", "лежать")
+    public boolean getCommandsAnimalById(){
+        System.out.println("Введите id животного: ");
+        String idStr = scanner.nextLine().trim();
+        int id;
+        try{
+            id = Integer.parseInt(idStr);
         }
-        {
-            System.out.println("Введите количество добавляемых единиц: ");
-            String str = scanner.nextLine();
-            try {
-                amount = Integer.parseInt( str );
-                if(amount < 1){
-                    System.out.println("Введено значение меньше единицы");
-                    return false;
-                }
-            } catch (NumberFormatException  e) {
-                System.out.println("Ошибка ввода (не целое)");
-                return false;
-            }
+        catch(NumberFormatException e){
+            return false;
         }
-        if(!presenter.addAmount(id, amount))
-            System.out.println("Введен некорректный id (игрушки нет в списке)");
-        else
-            System.out.println("Количество единиц успешно изменено");
+        System.out.println(presenter.getCommandsAnimalById(id));
         return true;
-    }
-
-    //изменить вес (частоту выпадения) игрушки
-    public boolean changeWeight(){
-        int id=0, weight = 0;
-        {
-            System.out.println("Введите id игрушки: ");
-            String str = scanner.nextLine();
-            try {
-                id = Integer.parseInt( str );
-                if(id < 0){
-                    System.out.println("Введено значение меньше нуля");
-                    return false;
-                }
-            } catch (NumberFormatException  e) {
-                System.out.println("Ошибка ввода (не целое)");
-                return false;
-            }
-        }
-        {
-            System.out.println("Введите вес (частоту выпадения игрушки) от 1 до 99: ");
-            String str = scanner.nextLine();
-            try {
-                weight = Integer.parseInt( str );
-                if(weight < 1 || weight >= 100){
-                    System.out.println("Введено число вне пределов от 1 до 99");
-                    return false;
-                }
-            } catch (NumberFormatException  e) {
-                System.out.println("Ошибка ввода (не целое)");
-                return false;
-            }
-        }
-        if(!presenter.changeWeight(id, weight))
-            System.out.println("Введен некорректный id (игрушки нет в списке)");
-        else
-            System.out.println("Вес (частота выпадения) успешно изменена");
-        return true;
-    }
-
-    public void saveToFile(){
-        System.out.println("Введите путь к файлу: ");
-        String path = scanner.nextLine();
-        if(presenter.saveToFile(path)){
-            System.out.println("Запись успешно выполнена");
-        }else{
-            System.out.println("Ошибка записи файла");
-        }
-    }
-
-    public void loadFromFile(){
-        System.out.println("Введите путь к файлу: ");
-        String path = scanner.nextLine();
-        if(presenter.loadFromFile(path)){
-            System.out.println("Чтение списка успешно выполнено:");
-            ShowListPrizes();
-        }else{
-            System.out.println("Ошибка чтения файла");
-        }
     }
 }
